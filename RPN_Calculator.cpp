@@ -4,15 +4,23 @@
 #include <map>
 #include <set>
 
+std::string securePop(std::stack<std::string> &stack) {
+    if (!stack.empty()) {
+        std::string temp = stack.top();
+        stack.pop();
+        return temp;
+    } else {
+        std::cout << "Stos pusty!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
-double calculate(std::stack<std::string> &stack) {
-    std::string operation = stack.top();
-    stack.pop();
+}
 
-    double l2 = stod(stack.top());
-    stack.pop();
-    double l1 = stod(stack.top());
-    stack.pop();
+void calculate(std::stack<std::string> &stack) {
+
+    std::string operation = securePop(stack);
+    double l2 = stod(securePop(stack));
+    double l1 = stod(securePop(stack));
 
     if (operation == "^") {
         stack.push(std::to_string(pow(l1, l2)));
@@ -33,17 +41,13 @@ double calculate(std::stack<std::string> &stack) {
     if (operation == "-") {
         stack.push(std::to_string(l1 - l2));
     }
-
-    return 0;
-
-
 }
 
-void pushAndCheck(std::stack<std::string>& stack, char c){
+void pushAndCheck(std::stack<std::string> &stack, char c) {
 
     stack.push(std::string(1, c));
     std::set<char> set = {'+', '-', '*', '/', '^'};
-    if(set.find(c) != set.end()){
+    if (set.find(c) != set.end()) {
         calculate(stack);
     }
 }
@@ -67,7 +71,7 @@ std::stack<std::string> convert(std::string &expr) {
 
             temp += *i;
 
-            while(i + 1 != expr.end() && isdigit(*(i + 1))){
+            while (i + 1 != expr.end() && isdigit(*(i + 1))) {
                 ++i;
                 temp += *i;
             }
@@ -86,8 +90,8 @@ std::stack<std::string> convert(std::string &expr) {
             signs.pop();
         } else if (map.find(std::string(1, *i)) != map.end()) {
 
-            if(*i == '-'){
-                if(i == expr.begin() || (!isdigit(*(i - 1)) && *(i - 1) != '(') && *(i - 1) != ')'){
+            if (*i == '-') {
+                if (i == expr.begin() || (!isdigit(*(i - 1)) && *(i - 1) != '(') && *(i - 1) != ')') {
                     temp += '-';
                     continue;
                 }
@@ -126,7 +130,7 @@ std::stack<std::string> convert(std::string &expr) {
 
 int main() {
     std::string s;
-    std::cin>>s;
+    std::cin >> s;
     std::stack<std::string> stack = convert(s);
     std::cout << stack.top() << " ";
 
